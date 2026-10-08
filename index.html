@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dragon Questions</title>
+<meta name="description" content="Dragon Questions is an AI self-reflection companion that answers with one thoughtful question instead of advice. Fine-tuned open-weight model, served on Modal.">
+<meta property="og:title" content="Dragon Questions">
+<meta property="og:description" content="Better questions. Deeper self-reflection. An early-stage AI product with real users, built on a fine-tuned open-weight model.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kristina-mylife.github.io/dragon_questions_public/">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://kristina-mylife.github.io/dragon_questions_public/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23efdcdb'/%3E%3Cpath d='M9 21c2-6 6-9 11-9 2 0 3 1 3 2s-1 2-2 2c-3 0-4 2-4 4' fill='none' stroke='%23b4737a' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M17 12l1-4 2 3M21 12.5l2.5-3 .5 3.5' fill='none' stroke='%23b4737a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='19.5' cy='14.5' r='1' fill='%232b2a2e'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#f8f3ea">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one calm reading column (~68ch) with a wider band for the conversation sample and the stack; a faint dragon-scale texture lives only behind the hero. */
+:root {
+  --bg: #f8f3ea;          /* warm ivory */
+  --surface: #fffaf2;
+  --ink: #2b2a2e;         /* charcoal */
+  --muted: #615c63;
+  --rose: #b4737a;        /* dusty rose */
+  --rose-soft: #efdcdb;
+  --blue: #5f7f9e;        /* soft blue */
+  --blue-soft: #dfe7ef;
+  --line: #e4dbcd;
+  --scale: rgba(180, 115, 122, 0.10);
+  --display: "Young Serif", "Iowan Old Style", Georgia, serif;
+  --body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: clamp(2.1rem, 5.2vw, 3.4rem);
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1d1b1f; --surface: #262328; --ink: #f1ebe2; --muted: #b5adb3;
+    --rose: #d99aa0; --rose-soft: #3d2b2e; --blue: #9ab6d1; --blue-soft: #263342;
+    --line: #3a353b; --scale: rgba(217, 154, 160, 0.08); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1d1b1f; --surface: #262328; --ink: #f1ebe2; --muted: #b5adb3;
+  --rose: #d99aa0; --rose-soft: #3d2b2e; --blue: #9ab6d1; --blue-soft: #263342;
+  --line: #3a353b; --scale: rgba(217, 154, 160, 0.08); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+}
+a { color: var(--blue); text-underline-offset: 3px; }
+a:focus-visible, .cta:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+.wrap { max-width: 68rem; margin: 0 auto; padding-inline: 20px; }
+.col { max-width: 42rem; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; line-height: 1.15; margin: 0; }
+h2 { font-size: var(--step-2); }
+h3 { font-size: var(--step-1); }
+p { margin: 0; }
+.label {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--rose);
+}
+
+/* nav */
+.top { border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-block: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+.brand svg { width: 28px; height: 28px; }
+.top nav ul { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 0; font-size: 0.95rem; }
+.top nav a { color: var(--muted); text-decoration: none; }
+.top nav a:hover { color: var(--ink); }
+
+/* hero */
+.hero {
+  position: relative;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(circle at 50% 0, transparent 58%, var(--scale) 59%, var(--scale) 64%, transparent 65%);
+  background-size: 34px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.hero .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; align-items: center; padding-block: 72px 64px; }
+.hero h1 { font-size: var(--step-3); }
+.hero .lede { margin-top: 20px; font-size: 1.15rem; color: var(--muted); max-width: 36rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; margin-top: 30px; }
+.cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--ink); color: var(--bg); text-decoration: none;
+  padding: 14px 22px; border-radius: 999px; font-weight: 600;
+}
+.cta:hover { background: var(--rose); color: var(--surface); }
+.note { font-size: 0.92rem; color: var(--muted); }
+
+/* conversation sample */
+.chat {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 20px; display: grid; gap: 12px; min-width: 0;
+  box-shadow: 0 18px 40px -28px rgba(43, 42, 46, 0.35);
+}
+.chat .label { color: var(--muted); }
+.bubble { max-width: 88%; padding: 11px 15px; border-radius: 16px; font-size: 0.98rem; line-height: 1.45; }
+.me { justify-self: end; background: var(--blue-soft); border-bottom-right-radius: 5px; }
+.bot { justify-self: start; background: var(--rose-soft); border-bottom-left-radius: 5px; font-family: var(--display); }
+.chat small { font-size: 0.8rem; color: var(--muted); }
+
+/* sections */
+section.block { padding-block: 72px; border-bottom: 1px solid var(--line); }
+section.block > .wrap { display: grid; gap: 28px; }
+.intro { display: grid; gap: 14px; }
+.intro p { color: var(--muted); }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 48px; }
+.two > div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.two p { color: var(--muted); }
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; counter-reset: step; }
+.steps li { display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: 2px solid var(--rose); min-width: 0; }
+.steps li::before { counter-increment: step; content: "Step " counter(step); font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--rose); }
+.steps p { color: var(--muted); }
+
+.stack { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+.stack dl { margin: 0; }
+.stack .row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 16px; padding-block: 14px; border-top: 1px solid var(--line); }
+.stack dt { font-family: var(--mono); font-size: 0.85rem; color: var(--blue); padding-top: 3px; }
+.stack dd { margin: 0; color: var(--muted); min-width: 0; }
+
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.fact { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: grid; gap: 6px; align-content: start; }
+.fact b { font-family: var(--display); font-weight: 400; font-size: 2rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.fact span { color: var(--muted); font-size: 0.95rem; }
+.roadmap { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; color: var(--muted); }
+.roadmap strong { color: var(--ink); font-weight: 600; }
+
+.founder { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 24px; align-items: start; }
+.mono-mark {
+  width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--blue-soft); color: var(--blue); font-family: var(--display); font-size: 1.7rem;
+}
+.founder .text { display: grid; gap: 10px; min-width: 0; }
+.founder .role { color: var(--rose); font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.04em; }
+.founder p { color: var(--muted); }
+
+.closing { text-align: left; }
+.closing .wrap { display: grid; gap: 18px; padding-block: 72px; }
+.closing h2 { font-size: var(--step-3); }
+
+footer { padding-block: 32px 48px; color: var(--muted); font-size: 0.9rem; }
+footer .wrap { display: grid; gap: 10px; }
+
+@media (max-width: 860px) {
+  .hero .wrap { grid-template-columns: minmax(0, 1fr); gap: 36px; padding-block: 48px; }
+  .steps, .facts { grid-template-columns: minmax(0, 1fr); }
+  .two, .stack { grid-template-columns: minmax(0, 1fr); }
+  section.block { padding-block: 52px; }
+}
+@media (max-width: 480px) {
+  .stack .row { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .founder { grid-template-columns: minmax(0, 1fr); }
+  .top nav ul { gap: 4px 14px; font-size: 0.9rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cta { transition: background-color .2s ease, color .2s ease; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Dragon Questions, back to top">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="15" fill="var(--rose-soft)"/>
+        <path d="M9 21c2-6 6-9 11-9 2 0 3 1 3 2s-1 2-2 2c-3 0-4 2-4 4" fill="none" stroke="var(--rose)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M17 12l1-4 2 3M21 12.5l2.5-3 .5 3.5" fill="none" stroke="var(--rose)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="19.5" cy="14.5" r="1" fill="var(--ink)"/>
+      </svg>
+      Dragon Questions
+    </a>
+    <nav aria-label="Sections">
+      <ul>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#tech">Technology</a></li>
+        <li><a href="#stage">Stage</a></li>
+        <li><a href="#founder">Founder</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <p class="label">AI self-reflection companion</p>
+        <h1 id="hero-title">Better questions. Deeper self&#8209;reflection.</h1>
+        <p class="lede">Dragon Questions answers what is on your mind with one thoughtful, sometimes uncomfortable question instead of advice. It helps you look at your assumptions, notice the patterns you repeat, and find the angle you have been avoiding.</p>
+        <div class="actions">
+          <a class="cta" href="https://t.me/dragon_questions_bot" target="_blank" rel="noopener">Try Dragon Questions on Telegram <span aria-hidden="true">→</span></a>
+          <span class="note">Conversations are in Russian today.</span>
+        </div>
+      </div>
+      <figure class="chat" aria-label="An example exchange">
+        <p class="label">Example exchange</p>
+        <p class="bubble me">I keep saying yes to every request at work, and then I resent it.</p>
+        <p class="bubble bot">What do you think would happen the first time you said no?</p>
+        <p class="bubble me">They'd think I'm not a team player.</p>
+        <p class="bubble bot">Whose opinion of you are you protecting when you say yes?</p>
+        <small>Illustrative, translated from Russian. One question per turn, no ready-made answers.</small>
+      </figure>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="what-title">
+    <div class="wrap">
+      <div class="intro col">
+        <p class="label">The product</p>
+        <h2 id="what-title">A question that does the work advice can't</h2>
+        <p>Most chat assistants rush to solve the problem you describe. People rarely change because someone told them what to do. They change when they notice something about their own thinking. Dragon Questions is built around that moment.</p>
+      </div>
+      <div class="two">
+        <div>
+          <h3>Inspired by coaching practice</h3>
+          <p>The questions follow the style of a working coach: short, specific to what you just said, and aimed at the assumption underneath it. The product does not impersonate any particular person.</p>
+        </div>
+        <div>
+          <h3>Not therapy</h3>
+          <p>Dragon Questions is a reflection tool, not a medical or psychological service, and it does not replace professional help. When a conversation shows signs of risk, the bot moves into a gentler support mode and points to real help.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="intro col">
+        <p class="label">How it works</p>
+        <h2 id="how-title">Three steps, as many rounds as you need</h2>
+      </div>
+      <ol class="steps">
+        <li>
+          <h3>Share what's on your mind</h3>
+          <p>Describe a situation, a challenge or a thought that keeps coming back, in your own words.</p>
+        </li>
+        <li>
+          <h3>Get a thoughtful question</h3>
+          <p>The bot replies with a single question meant to make you think, not with a list of tips.</p>
+        </li>
+        <li>
+          <h3>Explore your perspective</h3>
+          <p>Answer, keep going, and stop whenever you like. Many people find what they had overlooked a few questions in.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="tech" aria-labelledby="tech-title">
+    <div class="wrap">
+      <div class="intro col">
+        <p class="label">Technology</p>
+        <h2 id="tech-title">Built with open-weight AI</h2>
+        <p>The questions come from our own fine-tuned model, not from a general-purpose chatbot behind a prompt. Quality is improved through structured evaluation and human review, round after round.</p>
+      </div>
+      <div class="stack">
+        <dl>
+          <div class="row"><dt>Base model</dt><dd>Qwen-based open-weight model (Qwen3.8, 27B), chosen so we can train it and control how it is served.</dd></div>
+          <div class="row"><dt>Fine-tuning</dt><dd>LoRA adapters trained on coach-written questions and reviewed dialogues, with a second version trained for multi-turn conversations without repeats.</dd></div>
+          <div class="row"><dt>Inference</dt><dd>vLLM on Modal serverless GPUs. Containers scale to zero between conversations, and a smaller hosted model covers cold starts.</dd></div>
+        </dl>
+        <dl>
+          <div class="row"><dt>Evaluation</dt><dd>Held-out dialogues, automatic checks for repeats and worn openings, and blind A/B review of model versions by a professional coach.</dd></div>
+          <div class="row"><dt>Safety routing</dt><dd>Every turn is checked for risk signals before the model answers; risky conversations switch to a support mode with fixed, careful replies.</dd></div>
+          <div class="row"><dt>Privacy</dt><dd>Separate consent for human review and for training. Reviewers see dialogues without usernames, and raw texts are deleted after a retention period.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="stage" aria-labelledby="stage-title">
+    <div class="wrap">
+      <div class="intro col">
+        <p class="label">Current stage</p>
+        <h2 id="stage-title">Early, live, and learning from real conversations</h2>
+        <p>Dragon Questions has been open to a closed group of testers since September 2026. Usage is bursty: quiet days, then days when dozens of people talk to it at once. That pattern is exactly why the model runs on serverless GPUs.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><b>130+</b><span>conversations so far, each one reviewable by the team with consent</span></div>
+        <div class="fact"><b>963</b><span>messages from 44 people on the busiest day, October 7, 2026</span></div>
+        <div class="fact"><b>~1.5 s</b><span>typical time to a question on a warm GPU (median, measured in production)</span></div>
+      </div>
+      <div class="col">
+        <h3>Next</h3>
+        <ul class="roadmap">
+          <li><strong>Second model version in an A/B test</strong>, after the coach's blind comparison.</li>
+          <li><strong>Lower cost per conversation</strong>: GPU choice, scale-down tuning and an FP8 build under evaluation.</li>
+          <li><strong>More platforms</strong>: VK and other messengers are planned, not yet public.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="founder" aria-labelledby="founder-title">
+    <div class="wrap">
+      <div class="intro col">
+        <p class="label">Founder</p>
+        <h2 id="founder-title">Who builds it</h2>
+      </div>
+      <div class="founder col">
+        <div class="mono-mark" aria-hidden="true">KK</div>
+        <div class="text">
+          <h3>Kristina Kucherova</h3>
+          <p class="role">Founder &amp; Technical Lead</p>
+          <p>Background in software architecture, distributed systems, databases and AI-powered products. Leads the product end to end, from the Telegram bot and data pipeline to model training, evaluation and GPU inference.</p>
+          <p><a href="https://www.linkedin.com/in/kristina-kucherova-2b611a40/" target="_blank" rel="noopener">LinkedIn profile</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing" aria-labelledby="cta-title">
+    <div class="wrap">
+      <p class="label">Try it</p>
+      <h2 id="cta-title">Bring one question you keep avoiding.</h2>
+      <div class="actions">
+        <a class="cta" href="https://t.me/dragon_questions_bot" target="_blank" rel="noopener">Try Dragon Questions on Telegram <span aria-hidden="true">→</span></a>
+        <span class="note">t.me/dragon_questions_bot</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Dragon Questions. An early-stage product; features and models change as we learn.</p>
+    <p>Dragon Questions is not a medical service and does not provide therapy or crisis support. If you are in danger or in crisis, contact your local emergency number.</p>
+  </div>
+</footer>
+</body>
+</html>
